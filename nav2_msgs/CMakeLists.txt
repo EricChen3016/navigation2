@@ -16,6 +16,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/CollisionMonitorState.msg"
   "msg/Costmap.msg"
   "msg/CostmapMetaData.msg"
+  "msg/CriticsStats.msg"
   "msg/CostmapFilterInfo.msg"
   "msg/SpeedLimit.msg"
   "msg/VoxelGrid.msg"

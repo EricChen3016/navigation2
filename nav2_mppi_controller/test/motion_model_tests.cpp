@@ -26,12 +26,12 @@
 class RosLockGuard
 {
 public:
-  RosLockGuard() {rclcpp::init(0, nullptr);}
-  ~RosLockGuard() {rclcpp::shutdown();}
+  RosLockGuard() { rclcpp::init(0, nullptr); }
+  ~RosLockGuard() { rclcpp::shutdown(); }
 };
 RosLockGuard g_rclcpp;
 
-using namespace mppi;  // NOLINT
+using namespace mppi; // NOLINT
 
 TEST(MotionModelTests, DiffDriveTest)
 {
@@ -39,10 +39,10 @@ TEST(MotionModelTests, DiffDriveTest)
   models::State state;
   int batches = 1000;
   int timesteps = 50;
-  control_sequence.reset(timesteps);  // populates with zeros
-  state.reset(batches, timesteps);  // populates with zeros
+  control_sequence.reset(timesteps); // populates with zeros
+  state.reset(batches, timesteps);   // populates with zeros
   std::unique_ptr<DiffDriveMotionModel> model =
-    std::make_unique<DiffDriveMotionModel>();
+      std::make_unique<DiffDriveMotionModel>();
 
   // Check that predict properly populates the trajectory velocities with the control velocities
   state.cvx = 10 * xt::ones<float>({batches, timesteps});
@@ -56,11 +56,12 @@ TEST(MotionModelTests, DiffDriveTest)
   model->predict(state);
 
   EXPECT_EQ(state.vx, state.cvx);
-  EXPECT_EQ(state.vy, xt::zeros<float>({batches, timesteps}));  // non-holonomic
+  EXPECT_EQ(state.vy, xt::zeros<float>({batches, timesteps})); // non-holonomic
   EXPECT_EQ(state.wz, state.cwz);
 
   // Check that application of constraints are empty for Diff Drive
-  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++) {
+  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++)
+  {
     control_sequence.vx(i) = i * i * i;
     control_sequence.wz(i) = i * i * i;
   }
@@ -84,10 +85,10 @@ TEST(MotionModelTests, OmniTest)
   models::State state;
   int batches = 1000;
   int timesteps = 50;
-  control_sequence.reset(timesteps);  // populates with zeros
-  state.reset(batches, timesteps);  // populates with zeros
+  control_sequence.reset(timesteps); // populates with zeros
+  state.reset(batches, timesteps);   // populates with zeros
   std::unique_ptr<OmniMotionModel> model =
-    std::make_unique<OmniMotionModel>();
+      std::make_unique<OmniMotionModel>();
 
   // Check that predict properly populates the trajectory velocities with the control velocities
   state.cvx = 10 * xt::ones<float>({batches, timesteps});
@@ -102,11 +103,12 @@ TEST(MotionModelTests, OmniTest)
   model->predict(state);
 
   EXPECT_EQ(state.vx, state.cvx);
-  EXPECT_EQ(state.vy, state.cvy);  // holonomic
+  EXPECT_EQ(state.vy, state.cvy); // holonomic
   EXPECT_EQ(state.wz, state.cwz);
 
   // Check that application of constraints are empty for Omni Drive
-  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++) {
+  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++)
+  {
     control_sequence.vx(i) = i * i * i;
     control_sequence.vy(i) = i * i * i;
     control_sequence.wz(i) = i * i * i;
@@ -131,12 +133,12 @@ TEST(MotionModelTests, AckermannTest)
   models::State state;
   int batches = 1000;
   int timesteps = 50;
-  control_sequence.reset(timesteps);  // populates with zeros
-  state.reset(batches, timesteps);  // populates with zeros
+  control_sequence.reset(timesteps); // populates with zeros
+  state.reset(batches, timesteps);   // populates with zeros
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   ParametersHandler param_handler(node);
   std::unique_ptr<AckermannMotionModel> model =
-    std::make_unique<AckermannMotionModel>(&param_handler, node->get_name());
+      std::make_unique<AckermannMotionModel>(&param_handler, node->get_name());
 
   // Check that predict properly populates the trajectory velocities with the control velocities
   state.cvx = 10 * xt::ones<float>({batches, timesteps});
@@ -150,11 +152,12 @@ TEST(MotionModelTests, AckermannTest)
   model->predict(state);
 
   EXPECT_EQ(state.vx, state.cvx);
-  EXPECT_EQ(state.vy, xt::zeros<float>({batches, timesteps}));  // non-holonomic
+  EXPECT_EQ(state.vy, xt::zeros<float>({batches, timesteps})); // non-holonomic
   EXPECT_EQ(state.wz, state.cwz);
 
   // Check that application of constraints are non-empty for Ackermann Drive
-  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++) {
+  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++)
+  {
     control_sequence.vx(i) = i * i * i;
     control_sequence.wz(i) = i * i * i * i;
   }
@@ -164,13 +167,15 @@ TEST(MotionModelTests, AckermannTest)
   // VX equal since this doesn't change, the WZ is reduced if breaking the constraint
   EXPECT_EQ(initial_control_sequence.vx, control_sequence.vx);
   EXPECT_NE(initial_control_sequence.wz, control_sequence.wz);
-  for (unsigned int i = 1; i != control_sequence.wz.shape(0); i++) {
+  for (unsigned int i = 1; i != control_sequence.wz.shape(0); i++)
+  {
     EXPECT_GT(control_sequence.wz(i), 0.0);
   }
 
   // Now, check the specifics of the minimum curvature constraint
   EXPECT_NEAR(model->getMinTurningRadius(), 0.2, 1e-6);
-  for (unsigned int i = 1; i != control_sequence.vx.shape(0); i++) {
+  for (unsigned int i = 1; i != control_sequence.vx.shape(0); i++)
+  {
     EXPECT_TRUE(fabs(control_sequence.vx(i)) / fabs(control_sequence.wz(i)) >= 0.2);
   }
 
@@ -189,12 +194,12 @@ TEST(MotionModelTests, AckermannReversingTest)
   int batches = 1000;
   int timesteps = 50;
   control_sequence.reset(timesteps);  // populates with zeros
-  control_sequence2.reset(timesteps);  // populates with zeros
-  state.reset(batches, timesteps);  // populates with zeros
+  control_sequence2.reset(timesteps); // populates with zeros
+  state.reset(batches, timesteps);    // populates with zeros
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   ParametersHandler param_handler(node);
   std::unique_ptr<AckermannMotionModel> model =
-    std::make_unique<AckermannMotionModel>(&param_handler, node->get_name());
+      std::make_unique<AckermannMotionModel>(&param_handler, node->get_name());
 
   // Check that predict properly populates the trajectory velocities with the control velocities
   state.cvx = 10 * xt::ones<float>({batches, timesteps});
@@ -208,13 +213,14 @@ TEST(MotionModelTests, AckermannReversingTest)
   model->predict(state);
 
   EXPECT_EQ(state.vx, state.cvx);
-  EXPECT_EQ(state.vy, xt::zeros<float>({batches, timesteps}));  // non-holonomic
+  EXPECT_EQ(state.vy, xt::zeros<float>({batches, timesteps})); // non-holonomic
   EXPECT_EQ(state.wz, state.cwz);
 
   // Check that application of constraints are non-empty for Ackermann Drive
-  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++) {
+  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++)
+  {
     float idx = static_cast<float>(i);
-    control_sequence.vx(i) = -idx * idx * idx;  // now reversing
+    control_sequence.vx(i) = -idx * idx * idx; // now reversing
     control_sequence.wz(i) = idx * idx * idx * idx;
   }
 
@@ -223,14 +229,16 @@ TEST(MotionModelTests, AckermannReversingTest)
   // VX equal since this doesn't change, the WZ is reduced if breaking the constraint
   EXPECT_EQ(initial_control_sequence.vx, control_sequence.vx);
   EXPECT_NE(initial_control_sequence.wz, control_sequence.wz);
-  for (unsigned int i = 1; i != control_sequence.wz.shape(0); i++) {
+  for (unsigned int i = 1; i != control_sequence.wz.shape(0); i++)
+  {
     EXPECT_GT(control_sequence.wz(i), 0.0);
   }
 
   // Repeat with negative rotation direction
-  for (unsigned int i = 0; i != control_sequence2.vx.shape(0); i++) {
+  for (unsigned int i = 0; i != control_sequence2.vx.shape(0); i++)
+  {
     float idx = static_cast<float>(i);
-    control_sequence2.vx(i) = -idx * idx * idx;  // now reversing
+    control_sequence2.vx(i) = -idx * idx * idx; // now reversing
     control_sequence2.wz(i) = -idx * idx * idx * idx;
   }
 
@@ -239,13 +247,15 @@ TEST(MotionModelTests, AckermannReversingTest)
   // VX equal since this doesn't change, the WZ is reduced if breaking the constraint
   EXPECT_EQ(initial_control_sequence2.vx, control_sequence2.vx);
   EXPECT_NE(initial_control_sequence2.wz, control_sequence2.wz);
-  for (unsigned int i = 1; i != control_sequence2.wz.shape(0); i++) {
+  for (unsigned int i = 1; i != control_sequence2.wz.shape(0); i++)
+  {
     EXPECT_LT(control_sequence2.wz(i), 0.0);
   }
 
   // Now, check the specifics of the minimum curvature constraint
   EXPECT_NEAR(model->getMinTurningRadius(), 0.2, 1e-6);
-  for (unsigned int i = 1; i != control_sequence2.vx.shape(0); i++) {
+  for (unsigned int i = 1; i != control_sequence2.vx.shape(0); i++)
+  {
     EXPECT_TRUE(fabs(control_sequence2.vx(i)) / fabs(control_sequence2.wz(i)) >= 0.2);
   }
 

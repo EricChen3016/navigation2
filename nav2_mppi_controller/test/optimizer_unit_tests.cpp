@@ -24,21 +24,21 @@
 class RosLockGuard
 {
 public:
-  RosLockGuard() {rclcpp::init(0, nullptr);}
-  ~RosLockGuard() {rclcpp::shutdown();}
+  RosLockGuard() { rclcpp::init(0, nullptr); }
+  ~RosLockGuard() { rclcpp::shutdown(); }
 };
 RosLockGuard g_rclcpp;
 
-using namespace mppi;  // NOLINT
-using namespace mppi::critics;  // NOLINT
-using namespace mppi::utils;  // NOLINT
+using namespace mppi;          // NOLINT
+using namespace mppi::critics; // NOLINT
+using namespace mppi::utils;   // NOLINT
 using xt::evaluation_strategy::immediate;
 
 class OptimizerTester : public Optimizer
 {
 public:
   OptimizerTester()
-  : Optimizer() {}
+      : Optimizer() {}
 
   void testSetDiffModel()
   {
@@ -70,10 +70,13 @@ public:
   void testSetRandModel()
   {
     EXPECT_EQ(motion_model_.get(), nullptr);
-    try {
+    try
+    {
       setMotionModel("Random");
       FAIL();
-    } catch (...) {
+    }
+    catch (...)
+    {
       SUCCEED();
     }
     EXPECT_EQ(motion_model_.get(), nullptr);
@@ -121,18 +124,18 @@ public:
   }
 
   void testPrepare(
-    const geometry_msgs::msg::PoseStamped & robot_pose,
-    const geometry_msgs::msg::Twist & robot_speed,
-    const nav_msgs::msg::Path & plan, nav2_core::GoalChecker * goal_checker)
+      const geometry_msgs::msg::PoseStamped &robot_pose,
+      const geometry_msgs::msg::Twist &robot_speed,
+      const nav_msgs::msg::Path &plan, nav2_core::GoalChecker *goal_checker)
   {
     prepare(robot_pose, robot_speed, plan, goal_checker);
 
     EXPECT_EQ(critics_data_.goal_checker, nullptr);
-    EXPECT_NEAR(xt::sum(costs_, immediate)(), 0, 1e-6);  // should be reset
-    EXPECT_FALSE(critics_data_.fail_flag);  // should be reset
-    EXPECT_FALSE(critics_data_.motion_model->isHolonomic());  // object is valid + diff drive
-    EXPECT_FALSE(critics_data_.furthest_reached_path_point.has_value());  // val is not set
-    EXPECT_FALSE(critics_data_.path_pts_valid.has_value());  // val is not set
+    EXPECT_NEAR(xt::sum(costs_, immediate)(), 0, 1e-6);                  // should be reset
+    EXPECT_FALSE(critics_data_.fail_flag);                               // should be reset
+    EXPECT_FALSE(critics_data_.motion_model->isHolonomic());             // object is valid + diff drive
+    EXPECT_FALSE(critics_data_.furthest_reached_path_point.has_value()); // val is not set
+    EXPECT_FALSE(critics_data_.path_pts_valid.has_value());              // val is not set
     EXPECT_EQ(state_.pose.pose.position.x, 999);
     EXPECT_EQ(state_.speed.linear.y, 4.0);
     EXPECT_EQ(path_.x.shape(0), 17u);
@@ -145,7 +148,7 @@ public:
 
   std::pair<double, double> getVelLimits()
   {
-    auto & s = settings_;
+    auto &s = settings_;
     return {s.constraints.vx_min, s.constraints.vx_max};
   }
 
@@ -154,7 +157,7 @@ public:
     return applyControlSequenceConstraints();
   }
 
-  models::ControlSequence & grabControlSequence()
+  models::ControlSequence &grabControlSequence()
   {
     return control_sequence_;
   }
@@ -208,8 +211,8 @@ public:
   }
 
   void integrateStateVelocitiesWrapper(
-    models::Trajectories & traj,
-    const models::State & state)
+      models::Trajectories &traj,
+      const models::State &state)
   {
     return integrateStateVelocities(traj, state);
   }
@@ -223,7 +226,7 @@ TEST(OptimizerTests, BasicInitializedFunctions)
   node->declare_parameter("mppic.time_steps", rclcpp::ParameterValue(50));
   node->declare_parameter("controller_frequency", rclcpp::ParameterValue(30.0));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -239,9 +242,9 @@ TEST(OptimizerTests, BasicInitializedFunctions)
   optimizer_tester.resetMotionModel();
   optimizer_tester.testSetOmniModel();
   auto traj = optimizer_tester.getOptimizedTrajectory();
-  EXPECT_EQ(traj(5, 0), 0.0);  // x
-  EXPECT_EQ(traj(5, 1), 0.0);  // y
-  EXPECT_EQ(traj(5, 2), 0.0);  // yaw
+  EXPECT_EQ(traj(5, 0), 0.0); // x
+  EXPECT_EQ(traj(5, 1), 0.0); // y
+  EXPECT_EQ(traj(5, 2), 0.0); // yaw
   EXPECT_EQ(traj.shape(0), 50u);
   EXPECT_EQ(traj.shape(1), 3u);
 
@@ -255,7 +258,7 @@ TEST(OptimizerTests, TestOptimizerMotionModels)
   OptimizerTester optimizer_tester;
   node->declare_parameter("controller_frequency", rclcpp::ParameterValue(30.0));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -287,7 +290,7 @@ TEST(OptimizerTests, setOffsetTests)
   node->declare_parameter("mppic.batch_size", rclcpp::ParameterValue(1000));
   node->declare_parameter("mppic.time_steps", rclcpp::ParameterValue(50));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -310,7 +313,7 @@ TEST(OptimizerTests, resetTests)
   node->declare_parameter("mppic.batch_size", rclcpp::ParameterValue(1000));
   node->declare_parameter("mppic.time_steps", rclcpp::ParameterValue(50));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -330,7 +333,7 @@ TEST(OptimizerTests, FallbackTests)
   node->declare_parameter("mppic.time_steps", rclcpp::ParameterValue(50));
   node->declare_parameter("mppic.retry_attempt_limit", rclcpp::ParameterValue(2));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -354,7 +357,7 @@ TEST(OptimizerTests, PrepareTests)
   node->declare_parameter("mppic.time_steps", rclcpp::ParameterValue(50));
   node->declare_parameter("mppic.retry_attempt_limit", rclcpp::ParameterValue(2));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -381,14 +384,14 @@ TEST(OptimizerTests, shiftControlSequenceTests)
   node->declare_parameter("mppic.time_steps", rclcpp::ParameterValue(50));
   node->declare_parameter("mppic.retry_attempt_limit", rclcpp::ParameterValue(2));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
   optimizer_tester.initialize(node, "mppic", costmap_ros, &param_handler);
 
   // Test shiftControlSequence by setting the 2nd value to something unique to neighbors
-  auto & sequence = optimizer_tester.grabControlSequence();
+  auto &sequence = optimizer_tester.grabControlSequence();
   sequence.reset(100);
   sequence.vx(0) = 9999;
   sequence.vx(1) = 6;
@@ -424,7 +427,7 @@ TEST(OptimizerTests, SpeedLimitTests)
   node->declare_parameter("mppic.time_steps", rclcpp::ParameterValue(50));
   node->declare_parameter("mppic.retry_attempt_limit", rclcpp::ParameterValue(2));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -464,7 +467,7 @@ TEST(OptimizerTests, applyControlSequenceConstraintsTests)
   node->declare_parameter("mppic.vy_max", rclcpp::ParameterValue(0.75));
   node->declare_parameter("mppic.wz_max", rclcpp::ParameterValue(2.0));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -478,7 +481,7 @@ TEST(OptimizerTests, applyControlSequenceConstraintsTests)
   // in motion_models_test.cpp
   optimizer_tester.resetMotionModel();
   optimizer_tester.testSetOmniModel();
-  auto & sequence = optimizer_tester.grabControlSequence();
+  auto &sequence = optimizer_tester.grabControlSequence();
 
   // Test boundary of limits
   sequence.vx = xt::ones<float>({50});
@@ -520,7 +523,7 @@ TEST(OptimizerTests, updateStateVelocitiesTests)
   node->declare_parameter("mppic.vy_max", rclcpp::ParameterValue(0.60));
   node->declare_parameter("mppic.wz_max", rclcpp::ParameterValue(2.0));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -545,21 +548,21 @@ TEST(OptimizerTests, getControlFromSequenceAsTwistTests)
   node->declare_parameter("mppic.vy_max", rclcpp::ParameterValue(0.60));
   node->declare_parameter("mppic.wz_max", rclcpp::ParameterValue(2.0));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
   optimizer_tester.initialize(node, "mppic", costmap_ros, &param_handler);
 
   // Test conversion of control sequence into a Twist command to execute
-  auto & sequence = optimizer_tester.grabControlSequence();
+  auto &sequence = optimizer_tester.grabControlSequence();
   sequence.vx = 0.25 * xt::ones<float>({10});
   sequence.vy = 0.5 * xt::ones<float>({10});
   sequence.wz = 0.1 * xt::ones<float>({10});
 
   auto diff_t = optimizer_tester.getControlFromSequenceAsTwistWrapper();
   EXPECT_NEAR(diff_t.twist.linear.x, 0.25, 1e-6);
-  EXPECT_NEAR(diff_t.twist.linear.y, 0.0, 1e-6);  // Y should not be populated
+  EXPECT_NEAR(diff_t.twist.linear.y, 0.0, 1e-6); // Y should not be populated
   EXPECT_NEAR(diff_t.twist.angular.z, 0.1, 1e-6);
 
   // Set model to omni to consider holonomic vy elements
@@ -567,7 +570,7 @@ TEST(OptimizerTests, getControlFromSequenceAsTwistTests)
   optimizer_tester.testSetOmniModel();
   auto omni_t = optimizer_tester.getControlFromSequenceAsTwistWrapper();
   EXPECT_NEAR(omni_t.twist.linear.x, 0.25, 1e-6);
-  EXPECT_NEAR(omni_t.twist.linear.y, 0.5, 1e-6);  // Now it should be
+  EXPECT_NEAR(omni_t.twist.linear.y, 0.5, 1e-6); // Now it should be
   EXPECT_NEAR(omni_t.twist.angular.z, 0.1, 1e-6);
 }
 
@@ -580,7 +583,7 @@ TEST(OptimizerTests, integrateStateVelocitiesTests)
   node->declare_parameter("mppic.model_dt", rclcpp::ParameterValue(0.1));
   node->declare_parameter("mppic.time_steps", rclcpp::ParameterValue(50));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -602,7 +605,8 @@ TEST(OptimizerTests, integrateStateVelocitiesTests)
   optimizer_tester.integrateStateVelocitiesWrapper(traj, state);
   EXPECT_EQ(traj.y, xt::zeros<float>({1000, 50}));
   EXPECT_EQ(traj.yaws, xt::zeros<float>({1000, 50}));
-  for (unsigned int i = 0; i != traj.x.shape(1); i++) {
+  for (unsigned int i = 0; i != traj.x.shape(1); i++)
+  {
     EXPECT_NEAR(traj.x(1, i), i * 0.1 /*vel*/ * 0.1 /*dt*/, 1e-3);
   }
 
@@ -612,7 +616,8 @@ TEST(OptimizerTests, integrateStateVelocitiesTests)
   optimizer_tester.integrateStateVelocitiesWrapper(traj, state);
 
   EXPECT_EQ(traj.yaws, xt::zeros<float>({1000, 50}));
-  for (unsigned int i = 0; i != traj.x.shape(1); i++) {
+  for (unsigned int i = 0; i != traj.x.shape(1); i++)
+  {
     EXPECT_NEAR(traj.x(1, i), i * 0.1 /*vel*/ * 0.1 /*dt*/, 1e-3);
     EXPECT_NEAR(traj.y(1, i), i * 0.2 /*vel*/ * 0.1 /*dt*/, 1e-3);
   }
@@ -625,7 +630,8 @@ TEST(OptimizerTests, integrateStateVelocitiesTests)
 
   float x = 0;
   float y = 0;
-  for (unsigned int i = 1; i != traj.x.shape(1); i++) {
+  for (unsigned int i = 1; i != traj.x.shape(1); i++)
+  {
     std::cout << i << std::endl;
     x += (0.1 /*vx*/ * cos(0.2 /*wz*/ * 0.1 /*model_dt*/ * (i - 1))) * 0.1 /*model_dt*/;
     y += (0.1 /*vx*/ * sin(0.2 /*wz*/ * 0.1 /*model_dt*/ * (i - 1))) * 0.1 /*model_dt*/;

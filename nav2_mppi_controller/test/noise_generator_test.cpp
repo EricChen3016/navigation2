@@ -29,12 +29,12 @@
 class RosLockGuard
 {
 public:
-  RosLockGuard() {rclcpp::init(0, nullptr);}
-  ~RosLockGuard() {rclcpp::shutdown();}
+  RosLockGuard() { rclcpp::init(0, nullptr); }
+  ~RosLockGuard() { rclcpp::shutdown(); }
 };
 RosLockGuard g_rclcpp;
 
-using namespace mppi;  // NOLINT
+using namespace mppi; // NOLINT
 
 TEST(NoiseGeneratorTest, NoiseGeneratorLifecycle)
 {
@@ -70,7 +70,8 @@ TEST(NoiseGeneratorTest, NoiseGeneratorMain)
   // Populate a potential control sequence
   mppi::models::ControlSequence control_sequence;
   control_sequence.reset(25);
-  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++) {
+  for (unsigned int i = 0; i != control_sequence.vx.shape(0); i++)
+  {
     control_sequence.vx(i) = i;
     control_sequence.vy(i) = i;
     control_sequence.wz(i) = i;
@@ -81,7 +82,7 @@ TEST(NoiseGeneratorTest, NoiseGeneratorMain)
 
   // Request an update with no noise yet generated, should result in identical outputs
   generator.initialize(settings, false, "test_name", &handler);
-  generator.reset(settings, false);  // sets initial sizing and zeros out noises
+  generator.reset(settings, false); // sets initial sizing and zeros out noises
   generator.setNoisedControls(state, control_sequence);
   EXPECT_EQ(state.cvx(0), 0);
   EXPECT_EQ(state.cvy(0), 0);
@@ -95,10 +96,10 @@ TEST(NoiseGeneratorTest, NoiseGeneratorMain)
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   generator.setNoisedControls(state, control_sequence);
   EXPECT_NE(state.cvx(0), 0);
-  EXPECT_EQ(state.cvy(0), 0);  // Not populated in non-holonomic
+  EXPECT_EQ(state.cvy(0), 0); // Not populated in non-holonomic
   EXPECT_NE(state.cwz(0), 0);
   EXPECT_NE(state.cvx(9), 9);
-  EXPECT_EQ(state.cvy(9), 9);  // Not populated in non-holonomic
+  EXPECT_EQ(state.cvy(9), 9); // Not populated in non-holonomic
   EXPECT_NE(state.cwz(9), 9);
 
   EXPECT_NEAR(state.cvx(0), 0, 0.3);
@@ -109,15 +110,15 @@ TEST(NoiseGeneratorTest, NoiseGeneratorMain)
   EXPECT_NEAR(state.cwz(9), 9, 0.3);
 
   // Test holonomic setting
-  generator.reset(settings, true);  // Now holonomically
+  generator.reset(settings, true); // Now holonomically
   generator.generateNextNoises();
   std::this_thread::sleep_for(std::chrono::milliseconds(100));
   generator.setNoisedControls(state, control_sequence);
   EXPECT_NE(state.cvx(0), 0);
-  EXPECT_NE(state.cvy(0), 0);  // Now populated in non-holonomic
+  EXPECT_NE(state.cvy(0), 0); // Now populated in non-holonomic
   EXPECT_NE(state.cwz(0), 0);
   EXPECT_NE(state.cvx(9), 9);
-  EXPECT_NE(state.cvy(9), 9);  // Now populated in non-holonomic
+  EXPECT_NE(state.cvy(9), 9); // Now populated in non-holonomic
   EXPECT_NE(state.cwz(9), 9);
 
   EXPECT_NEAR(state.cvx(0), 0, 0.3);

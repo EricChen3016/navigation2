@@ -35,17 +35,20 @@
 class RosLockGuard
 {
 public:
-  RosLockGuard() {rclcpp::init(0, nullptr);}
-  ~RosLockGuard() {rclcpp::shutdown();}
+  RosLockGuard() { rclcpp::init(0, nullptr); }
+  ~RosLockGuard() { rclcpp::shutdown(); }
 };
 RosLockGuard g_rclcpp;
 
 // Smoke tests the optimizer
 
 class OptimizerSuite : public ::testing::TestWithParam<std::tuple<std::string,
-    std::vector<std::string>, bool>> {};
+                                                                  std::vector<std::string>, bool>>
+{
+};
 
-TEST_P(OptimizerSuite, OptimizerTest) {
+TEST_P(OptimizerSuite, OptimizerTest)
+{
   auto [motion_model, critics, consider_footprint] = GetParam();
 
   int batch_size = 400;
@@ -63,7 +66,7 @@ TEST_P(OptimizerSuite, OptimizerTest) {
 
   TestPathSettings path_settings{start_pose, path_points, path_step, path_step};
   TestOptimizerSettings optimizer_settings{batch_size, time_steps, iteration_count,
-    lookahead_distance, motion_model, consider_footprint};
+                                           lookahead_distance, motion_model, consider_footprint};
 
   unsigned int offset = 4;
   unsigned int obstacle_size = offset * 2;
@@ -85,31 +88,27 @@ TEST_P(OptimizerSuite, OptimizerTest) {
   auto pose = getDummyPointStamped(node, start_pose);
   auto velocity = getDummyTwist();
   auto path = getIncrementalDummyPath(node, path_settings);
-  nav2_core::GoalChecker * dummy_goal_checker{nullptr};
+  nav2_core::GoalChecker *dummy_goal_checker{nullptr};
 
   EXPECT_NO_THROW(optimizer->evalControl(pose, velocity, path, dummy_goal_checker));
 }
 
 INSTANTIATE_TEST_SUITE_P(
-  OptimizerTests,
-  OptimizerSuite,
-  ::testing::Values(
-    std::make_tuple(
-      "Omni",
-      std::vector<std::string>(
-        {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"}, {"PathAlignCritic"},
-          {"TwirlingCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}}),
-      true),
-    std::make_tuple(
-      "DiffDrive",
-      std::vector<std::string>(
-        {{"GoalCritic"}, {"GoalAngleCritic"}, {"CostCritic"},
-          {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}}),
-      true),
-    std::make_tuple(
-      "Ackermann",
-      std::vector<std::string>(
-        {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"},
-          {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}}),
-      true))
-);
+    OptimizerTests,
+    OptimizerSuite,
+    ::testing::Values(
+        std::make_tuple(
+            "Omni",
+            std::vector<std::string>(
+                {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"}, {"PathAlignCritic"}, {"TwirlingCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}}),
+            true),
+        std::make_tuple(
+            "DiffDrive",
+            std::vector<std::string>(
+                {{"GoalCritic"}, {"GoalAngleCritic"}, {"CostCritic"}, {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}}),
+            true),
+        std::make_tuple(
+            "Ackermann",
+            std::vector<std::string>(
+                {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"}, {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}}),
+            true)));

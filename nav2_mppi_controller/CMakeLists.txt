@@ -29,6 +29,7 @@ set(dependencies_pkgs
   nav_msgs
   nav2_core
   nav2_costmap_2d
+  nav2_msgs
   nav2_util
   tf2_geometry_msgs
   tf2_eigen

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_MPPI_CONTROLLER__CRITIC_MANAGER_HPP_
-#define NAV2_MPPI_CONTROLLER__CRITIC_MANAGER_HPP_
+#ifndef NAV2_MPPI_CONTROLLER_HM__CRITIC_MANAGER_HPP_
+#define NAV2_MPPI_CONTROLLER_HM__CRITIC_MANAGER_HPP_
 
 #include <memory>
 #include <string>
@@ -31,73 +31,77 @@
 #include "nav2_mppi_controller/tools/utils.hpp"
 #include "nav2_mppi_controller/critic_data.hpp"
 #include "nav2_mppi_controller/critic_function.hpp"
+#include "nav2_msgs/msg/critics_stats.hpp"
 
 namespace mppi
 {
 
-/**
- * @class mppi::CriticManager
- * @brief Manager of objective function plugins for scoring trajectories
- */
-class CriticManager
-{
-public:
   /**
-    * @brief Constructor for mppi::CriticManager
-    */
-  CriticManager() = default;
+   * @class mppi::CriticManager
+   * @brief Manager of objective function plugins for scoring trajectories
+   */
+  class CriticManager
+  {
+  public:
+    /**
+     * @brief Constructor for mppi::CriticManager
+     */
+    CriticManager() = default;
 
-  /**
-    * @brief Virtual Destructor for mppi::CriticManager
-    */
-  virtual ~CriticManager() = default;
+    /**
+     * @brief Virtual Destructor for mppi::CriticManager
+     */
+    virtual ~CriticManager() = default;
 
-  /**
-    * @brief Configure critic manager on bringup and load plugins
-    * @param parent WeakPtr to node
-    * @param name Name of plugin
-    * @param costmap_ros Costmap2DROS object of environment
-    * @param dynamic_parameter_handler Parameter handler object
-    */
-  void on_configure(
-    rclcpp_lifecycle::LifecycleNode::WeakPtr parent, const std::string & name,
-    std::shared_ptr<nav2_costmap_2d::Costmap2DROS>, ParametersHandler *);
+    /**
+     * @brief Configure critic manager on bringup and load plugins
+     * @param parent WeakPtr to node
+     * @param name Name of plugin
+     * @param costmap_ros Costmap2DROS object of environment
+     * @param dynamic_parameter_handler Parameter handler object
+     */
+    void on_configure(
+        rclcpp_lifecycle::LifecycleNode::WeakPtr parent, const std::string &name,
+        std::shared_ptr<nav2_costmap_2d::Costmap2DROS>, ParametersHandler *);
 
-  /**
-    * @brief Score trajectories by the set of loaded critic functions
-    * @param CriticData Struct of necessary information to pass to the critic functions
-    */
-  void evalTrajectoriesScores(CriticData & data) const;
+    /**
+     * @brief Score trajectories by the set of loaded critic functions
+     * @param CriticData Struct of necessary information to pass to the critic functions
+     */
+    void evalTrajectoriesScores(CriticData &data) const;
 
-protected:
-  /**
-    * @brief Get parameters (critics to load)
-    */
-  void getParams();
+  protected:
+    /**
+     * @brief Get parameters (critics to load)
+     */
+    void getParams();
 
-  /**
-    * @brief Load the critic plugins
-    */
-  virtual void loadCritics();
+    /**
+     * @brief Load the critic plugins
+     */
+    virtual void loadCritics();
 
-  /**
-    * @brief Get full-name namespaced critic IDs
-    */
-  std::string getFullName(const std::string & name);
+    /**
+     * @brief Get full-name namespaced critic IDs
+     */
+    std::string getFullName(const std::string &name);
 
-protected:
-  rclcpp_lifecycle::LifecycleNode::WeakPtr parent_;
-  std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros_;
-  std::string name_;
+  protected:
+    rclcpp_lifecycle::LifecycleNode::WeakPtr parent_;
+    std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros_;
+    std::string name_;
 
-  ParametersHandler * parameters_handler_;
-  std::vector<std::string> critic_names_;
-  std::unique_ptr<pluginlib::ClassLoader<critics::CriticFunction>> loader_;
-  std::vector<std::unique_ptr<critics::CriticFunction>> critics_;
+    ParametersHandler *parameters_handler_;
+    std::vector<std::string> critic_names_;
+    std::unique_ptr<pluginlib::ClassLoader<critics::CriticFunction>> loader_;
+    std::vector<std::unique_ptr<critics::CriticFunction>> critics_;
 
-  rclcpp::Logger logger_{rclcpp::get_logger("MPPIController")};
-};
+    rclcpp_lifecycle::LifecyclePublisher<nav2_msgs::msg::CriticsStats>::SharedPtr critics_effect_pub_;
+    bool publish_critics_stats_;
 
-}  // namespace mppi
+    rclcpp::Logger logger_{rclcpp::get_logger("MPPIController")};
+  };
 
-#endif  // NAV2_MPPI_CONTROLLER__CRITIC_MANAGER_HPP_
+} // namespace mppi
+
+#endif // NAV2_MPPI_CONTROLLER_HM__CRITIC_MANAGER_HPP_

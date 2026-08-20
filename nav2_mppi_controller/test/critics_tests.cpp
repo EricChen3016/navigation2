@@ -32,15 +32,15 @@
 #include "nav2_mppi_controller/critics/twirling_critic.hpp"
 #include "nav2_mppi_controller/critics/velocity_deadband_critic.hpp"
 #include "nav2_core/exceptions.hpp"
-#include "utils_test.cpp"  // NOLINT
+#include "utils_test.cpp" // NOLINT
 
 // Tests the various critic plugin functions
 
 // ROS lock used from utils_test.cpp
 
-using namespace mppi;  // NOLINT
-using namespace mppi::critics;  // NOLINT
-using namespace mppi::utils;  // NOLINT
+using namespace mppi;          // NOLINT
+using namespace mppi::critics; // NOLINT
+using namespace mppi::utils;   // NOLINT
 using xt::evaluation_strategy::immediate;
 
 TEST(CriticTests, ConstraintsCritic)
@@ -48,7 +48,7 @@ TEST(CriticTests, ConstraintsCritic)
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -60,8 +60,8 @@ TEST(CriticTests, ConstraintsCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<DiffDriveMotionModel>();
 
   // Initialization testing
@@ -115,10 +115,11 @@ TEST(CriticTests, ConstraintsCritic)
   EXPECT_NEAR(costs(1), 0.48, 0.01);
 }
 
-TEST(CriticTests, ObstacleCriticMisalignedParams) {
+TEST(CriticTests, ObstacleCriticMisalignedParams)
+{
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   auto getParam = param_handler.getParamGetter("critic");
   bool consider_footprint;
@@ -130,15 +131,15 @@ TEST(CriticTests, ObstacleCriticMisalignedParams) {
   ObstaclesCritic critic;
   // Expect throw when settings mismatched
   EXPECT_THROW(
-    critic.on_configure(node, "mppi", "critic", costmap_ros, &param_handler),
-    nav2_core::PlannerException
-  );
+      critic.on_configure(node, "mppi", "critic", costmap_ros, &param_handler),
+      nav2_core::PlannerException);
 }
 
-TEST(CriticTests, ObstacleCriticAlignedParams) {
+TEST(CriticTests, ObstacleCriticAlignedParams)
+{
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   auto getParam = param_handler.getParamGetter("critic");
   bool consider_footprint;
@@ -152,12 +153,12 @@ TEST(CriticTests, ObstacleCriticAlignedParams) {
   EXPECT_EQ(critic.getName(), "critic");
 }
 
-
-TEST(CriticTests, CostCriticMisAlignedParams) {
+TEST(CriticTests, CostCriticMisAlignedParams)
+{
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   auto getParam = param_handler.getParamGetter("critic");
@@ -168,16 +169,16 @@ TEST(CriticTests, CostCriticMisAlignedParams) {
   CostCritic critic;
   // Expect throw when settings mismatched
   EXPECT_THROW(
-    critic.on_configure(node, "mppi", "critic", costmap_ros, &param_handler),
-    nav2_core::PlannerException
-  );
+      critic.on_configure(node, "mppi", "critic", costmap_ros, &param_handler),
+      nav2_core::PlannerException);
 }
 
-TEST(CriticTests, CostCriticAlignedParams) {
+TEST(CriticTests, CostCriticAlignedParams)
+{
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   auto getParam = param_handler.getParamGetter("critic");
@@ -195,7 +196,7 @@ TEST(CriticTests, GoalAngleCritic)
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -208,8 +209,8 @@ TEST(CriticTests, GoalAngleCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<DiffDriveMotionModel>();
 
   // Initialization testing
@@ -239,15 +240,15 @@ TEST(CriticTests, GoalAngleCritic)
   state.pose.pose.position.x = 9.7;
   critic.score(data);
   EXPECT_GT(xt::sum(costs, immediate)(), 0);
-  EXPECT_NEAR(costs(0), 9.42, 0.02);  // (3.14 - 0.0) * 3.0 weight
+  EXPECT_NEAR(costs(0), 9.42, 0.02); // (3.14 - 0.0) * 3.0 weight
 }
 
-TEST(CriticTests, GoalCritic)
+TEST(CriticTests, GoalAngleSymmetricCritic)
 {
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -260,8 +261,57 @@ TEST(CriticTests, GoalCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
+  data.motion_model = std::make_shared<DiffDriveMotionModel>();
+
+  // Initialization testing
+
+  // Make sure initializes correctly
+  auto getParam = param_handler.getParamGetter("critic");
+  bool symmetric_yaw_tolerance = true;
+  getParam(symmetric_yaw_tolerance, "symmetric_yaw_tolerance", true);
+  GoalAngleCritic critic;
+  critic.on_configure(node, "mppi", "critic", costmap_ros, &param_handler);
+  EXPECT_EQ(critic.getName(), "critic");
+
+  // Scoring testing
+
+  // provide state poses and path too far from `threshold_to_consider` to consider
+  state.pose.pose.position.x = 9.7;
+  path.reset(10);
+  path.x(9) = 10.0;
+  path.y(9) = 0.0;
+  path.yaws(9) = 3.14;
+  critic.score(data);
+  EXPECT_GT(xt::sum(costs, immediate)(), 0);
+  EXPECT_NEAR(costs(0), 0, 0.02); // Should be zero cost due to symmetry
+
+  path.yaws(9) = 0.0;
+  critic.score(data);
+  EXPECT_NEAR(costs(0), 0, 0.02); // (0.0 - 0.0) * 3.0 weight
+}
+
+TEST(CriticTests, GoalCritic)
+{
+  // Standard preamble
+  auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
+  auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
+      "dummy_costmap", "", "dummy_costmap");
+  ParametersHandler param_handler(node);
+  rclcpp_lifecycle::State lstate;
+  costmap_ros->on_configure(lstate);
+
+  models::State state;
+  models::ControlSequence control_sequence;
+  models::Trajectories generated_trajectories;
+  generated_trajectories.reset(1000, 30);
+  models::Path path;
+  xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
+  float model_dt = 0.1;
+  CriticData data =
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<DiffDriveMotionModel>();
 
   // Initialization testing
@@ -279,16 +329,16 @@ TEST(CriticTests, GoalCritic)
   path.x(9) = 10.0;
   path.y(9) = 0.0;
   critic.score(data);
-  EXPECT_NEAR(costs(2), 0.0, 1e-6);  // (0 * 5.0 weight
-  EXPECT_NEAR(xt::sum(costs, immediate)(), 0.0, 1e-6);  // Should all be 0 * 1000
+  EXPECT_NEAR(costs(2), 0.0, 1e-6);                    // (0 * 5.0 weight
+  EXPECT_NEAR(xt::sum(costs, immediate)(), 0.0, 1e-6); // Should all be 0 * 1000
   costs = xt::zeros<float>({1000});
 
   // provide state pose and path close
   path.x(9) = 0.5;
   path.y(9) = 0.0;
   critic.score(data);
-  EXPECT_NEAR(costs(2), 2.5, 1e-6);  // (sqrt(10.0 * 10.0) * 5.0 weight
-  EXPECT_NEAR(xt::sum(costs, immediate)(), 2500.0, 1e-6);  // should be 2.5 * 1000
+  EXPECT_NEAR(costs(2), 2.5, 1e-6);                       // (sqrt(10.0 * 10.0) * 5.0 weight
+  EXPECT_NEAR(xt::sum(costs, immediate)(), 2500.0, 1e-6); // should be 2.5 * 1000
 }
 
 TEST(CriticTests, PathAngleCritic)
@@ -296,7 +346,7 @@ TEST(CriticTests, PathAngleCritic)
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -310,10 +360,10 @@ TEST(CriticTests, PathAngleCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<DiffDriveMotionModel>();
-  TestGoalChecker goal_checker;  // from utils_tests tolerance of 0.25 positionally
+  TestGoalChecker goal_checker; // from utils_tests tolerance of 0.25 positionally
 
   // Initialization testing
 
@@ -334,18 +384,18 @@ TEST(CriticTests, PathAngleCritic)
 
   // provide state pose and path close but outside of tol. with less than PI/2 angular diff.
   path.x(9) = 0.95;
-  data.furthest_reached_path_point = 2;  // So it grabs the 2 + offset_from_furthest_ = 6th point
-  path.x(6) = 1.0;  // angle between path point and pose = 0 < max_angle_to_furthest_
+  data.furthest_reached_path_point = 2; // So it grabs the 2 + offset_from_furthest_ = 6th point
+  path.x(6) = 1.0;                      // angle between path point and pose = 0 < max_angle_to_furthest_
   path.y(6) = 0.0;
   critic.score(data);
   EXPECT_NEAR(xt::sum(costs, immediate)(), 0.0, 1e-6);
 
   // provide state pose and path close but outside of tol. with more than PI/2 angular diff.
-  path.x(6) = -1.0;  // angle between path point and pose > max_angle_to_furthest_
+  path.x(6) = -1.0; // angle between path point and pose > max_angle_to_furthest_
   path.y(6) = 4.0;
   critic.score(data);
   EXPECT_GT(xt::sum(costs, immediate)(), 0.0);
-  EXPECT_NEAR(costs(0), 3.6315, 1e-2);  // atan2(4,-1) [1.81] * 2.0 weight
+  EXPECT_NEAR(costs(0), 3.6315, 1e-2); // atan2(4,-1) [1.81] * 2.0 weight
 }
 
 TEST(CriticTests, PreferForwardCritic)
@@ -353,7 +403,7 @@ TEST(CriticTests, PreferForwardCritic)
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -367,10 +417,10 @@ TEST(CriticTests, PreferForwardCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<DiffDriveMotionModel>();
-  TestGoalChecker goal_checker;  // from utils_tests tolerance of 0.25 positionally
+  TestGoalChecker goal_checker; // from utils_tests tolerance of 0.25 positionally
 
   // Initialization testing
 
@@ -398,7 +448,7 @@ TEST(CriticTests, PreferForwardCritic)
   state.vx = -1.0 * xt::ones<float>({1000, 30});
   critic.score(data);
   EXPECT_GT(xt::sum(costs, immediate)(), 0.0f);
-  EXPECT_NEAR(costs(0), 15.0f, 1e-3f);  // 1.0 * 0.1 model_dt * 5.0 weight * 30 length
+  EXPECT_NEAR(costs(0), 15.0f, 1e-3f); // 1.0 * 0.1 model_dt * 5.0 weight * 30 length
 }
 
 TEST(CriticTests, TwirlingCritic)
@@ -406,7 +456,7 @@ TEST(CriticTests, TwirlingCritic)
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -420,10 +470,10 @@ TEST(CriticTests, TwirlingCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<DiffDriveMotionModel>();
-  TestGoalChecker goal_checker;  // from utils_tests tolerance of 0.25 positionally
+  TestGoalChecker goal_checker; // from utils_tests tolerance of 0.25 positionally
   data.goal_checker = &goal_checker;
 
   // Initialization testing
@@ -452,13 +502,13 @@ TEST(CriticTests, TwirlingCritic)
   auto traj_view = xt::view(state.wz, 0, xt::all());
   traj_view = 10.0;
   critic.score(data);
-  EXPECT_NEAR(costs(0), 100.0, 1e-6);  // (mean(10.0) * 10.0 weight
+  EXPECT_NEAR(costs(0), 100.0, 1e-6); // (mean(10.0) * 10.0 weight
   costs = xt::zeros<float>({1000});
 
   // Now try again with some wiggling noise
   traj_view = xt::random::randn<float>({30}, 0.0, 0.5);
   critic.score(data);
-  EXPECT_NEAR(costs(0), 3.3, 4e-1);  // (mean of noise with mu=0, sigma=0.5 * 10.0 weight
+  EXPECT_NEAR(costs(0), 3.3, 4e-1); // (mean of noise with mu=0, sigma=0.5 * 10.0 weight
 }
 
 TEST(CriticTests, PathFollowCritic)
@@ -466,7 +516,7 @@ TEST(CriticTests, PathFollowCritic)
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -480,10 +530,10 @@ TEST(CriticTests, PathFollowCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<DiffDriveMotionModel>();
-  TestGoalChecker goal_checker;  // from utils_tests tolerance of 0.25 positionally
+  TestGoalChecker goal_checker; // from utils_tests tolerance of 0.25 positionally
   data.goal_checker = &goal_checker;
 
   // Initialization testing
@@ -506,7 +556,7 @@ TEST(CriticTests, PathFollowCritic)
   // pose differential is (0, 0) and (0.15, 0)
   path.x(5) = 0.15;
   critic.score(data);
-  EXPECT_NEAR(xt::sum(costs, immediate)(), 750.0, 1e-2);  // 0.15 * 5 weight * 1000
+  EXPECT_NEAR(xt::sum(costs, immediate)(), 750.0, 1e-2); // 0.15 * 5 weight * 1000
 }
 
 TEST(CriticTests, PathAlignCritic)
@@ -514,7 +564,7 @@ TEST(CriticTests, PathAlignCritic)
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -528,10 +578,10 @@ TEST(CriticTests, PathAlignCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<DiffDriveMotionModel>();
-  TestGoalChecker goal_checker;  // from utils_tests tolerance of 0.25 positionally
+  TestGoalChecker goal_checker; // from utils_tests tolerance of 0.25 positionally
   data.goal_checker = &goal_checker;
 
   // Initialization testing
@@ -566,7 +616,7 @@ TEST(CriticTests, PathAlignCritic)
   // provide state pose and path far enough to enable, with data to pass condition
   // and with a valid path to pass invalid path condition
   state.pose.pose.position.x = 0.0;
-  data.path_pts_valid.reset();  // Recompute on new path
+  data.path_pts_valid.reset(); // Recompute on new path
   path.reset(22);
   path.x(0) = 0;
   path.x(1) = 0.1;
@@ -597,15 +647,17 @@ TEST(CriticTests, PathAlignCritic)
 
   // provide state pose and path far enough to enable, with data to pass condition
   // but path is blocked in collision
-  auto * costmap = costmap_ros->getCostmap();
+  auto *costmap = costmap_ros->getCostmap();
   // island in the middle of lethal cost to cross. Costmap defaults to size 5x5 @ 10cm resolution
-  for (unsigned int i = 11; i <= 30; ++i) {  // 1.1m-3m
-    for (unsigned int j = 11; j <= 30; ++j) {  // 1.1m-3m
+  for (unsigned int i = 11; i <= 30; ++i)
+  { // 1.1m-3m
+    for (unsigned int j = 11; j <= 30; ++j)
+    { // 1.1m-3m
       costmap->setCost(i, j, 254);
     }
   }
 
-  data.path_pts_valid.reset();  // Recompute on new path
+  data.path_pts_valid.reset(); // Recompute on new path
   costs = xt::zeros<float>({1000});
   path.x = 1.5 * xt::ones<float>({22});
   path.y = 1.5 * xt::ones<float>({22});
@@ -618,7 +670,7 @@ TEST(CriticTests, PathAlignLegacyCritic)
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -632,10 +684,10 @@ TEST(CriticTests, PathAlignLegacyCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<DiffDriveMotionModel>();
-  TestGoalChecker goal_checker;  // from utils_tests tolerance of 0.25 positionally
+  TestGoalChecker goal_checker; // from utils_tests tolerance of 0.25 positionally
   data.goal_checker = &goal_checker;
 
   // Initialization testing
@@ -670,7 +722,7 @@ TEST(CriticTests, PathAlignLegacyCritic)
   // provide state pose and path far enough to enable, with data to pass condition
   // and with a valid path to pass invalid path condition
   state.pose.pose.position.x = 0.0;
-  data.path_pts_valid.reset();  // Recompute on new path
+  data.path_pts_valid.reset(); // Recompute on new path
   path.reset(22);
   path.x(0) = 0;
   path.x(1) = 0.1;
@@ -701,15 +753,17 @@ TEST(CriticTests, PathAlignLegacyCritic)
 
   // provide state pose and path far enough to enable, with data to pass condition
   // but path is blocked in collision
-  auto * costmap = costmap_ros->getCostmap();
+  auto *costmap = costmap_ros->getCostmap();
   // island in the middle of lethal cost to cross. Costmap defaults to size 5x5 @ 10cm resolution
-  for (unsigned int i = 11; i <= 30; ++i) {  // 1.1m-3m
-    for (unsigned int j = 11; j <= 30; ++j) {  // 1.1m-3m
+  for (unsigned int i = 11; i <= 30; ++i)
+  { // 1.1m-3m
+    for (unsigned int j = 11; j <= 30; ++j)
+    { // 1.1m-3m
       costmap->setCost(i, j, 254);
     }
   }
 
-  data.path_pts_valid.reset();  // Recompute on new path
+  data.path_pts_valid.reset(); // Recompute on new path
   costs = xt::zeros<float>({1000});
   path.x = 1.5 * xt::ones<float>({22});
   path.y = 1.5 * xt::ones<float>({22});
@@ -722,7 +776,7 @@ TEST(CriticTests, VelocityDeadbandCritic)
   // Standard preamble
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   auto getParam = param_handler.getParamGetter("critic");
   std::vector<double> deadband_velocities_;
@@ -737,8 +791,8 @@ TEST(CriticTests, VelocityDeadbandCritic)
   xt::xtensor<float, 1> costs = xt::zeros<float>({1000});
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
-    std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr, std::nullopt,
+       std::nullopt};
   data.motion_model = std::make_shared<OmniMotionModel>();
 
   // Initialization testing

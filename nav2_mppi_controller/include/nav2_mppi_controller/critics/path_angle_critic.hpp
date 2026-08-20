@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_MPPI_CONTROLLER__CRITICS__PATH_ANGLE_CRITIC_HPP_
-#define NAV2_MPPI_CONTROLLER__CRITICS__PATH_ANGLE_CRITIC_HPP_
+#ifndef NAV2_MPPI_CONTROLLER_HM__CRITICS__PATH_ANGLE_CRITIC_HPP_
+#define NAV2_MPPI_CONTROLLER_HM__CRITICS__PATH_ANGLE_CRITIC_HPP_
 
 #include "nav2_mppi_controller/critic_function.hpp"
 #include "nav2_mppi_controller/models/state.hpp"
@@ -22,39 +22,39 @@
 namespace mppi::critics
 {
 
-/**
- * @class mppi::critics::ConstraintCritic
- * @brief Critic objective function for aligning to path in cases of extreme misalignment
- * or turning
- */
-class PathAngleCritic : public CriticFunction
-{
-public:
   /**
-    * @brief Initialize critic
-    */
-  void initialize() override;
-
-  /**
-   * @brief Evaluate cost related to robot orientation at goal pose
-   * (considered only if robot near last goal in current plan)
-   *
-   * @param costs [out] add goal angle cost values to this tensor
+   * @class mppi::critics::ConstraintCritic
+   * @brief Critic objective function for aligning to path in cases of extreme misalignment
+   * or turning
    */
-  void score(CriticData & data) override;
+  class PathAngleCritic : public CriticFunction
+  {
+  public:
+    /**
+     * @brief Initialize critic
+     */
+    void initialize() override;
 
-protected:
-  float max_angle_to_furthest_{0};
-  float threshold_to_consider_{0};
+    /**
+     * @brief Evaluate cost related to robot orientation at goal pose
+     * (considered only if robot near last goal in current plan)
+     *
+     * @param costs [out] add goal angle cost values to this tensor
+     */
+    void score(CriticData &data) override;
 
-  size_t offset_from_furthest_{0};
-  bool reversing_allowed_{true};
-  bool forward_preference_{true};
+  protected:
+    float max_angle_to_furthest_{0};
+    float threshold_to_consider_{0};
 
-  unsigned int power_{0};
-  float weight_{0};
-};
+    size_t offset_from_furthest_{0};
+    bool reversing_allowed_{true};
+    bool forward_preference_{true};
 
-}  // namespace mppi::critics
+    unsigned int power_{0};
+    float weight_{0};
+  };
 
-#endif  // NAV2_MPPI_CONTROLLER__CRITICS__PATH_ANGLE_CRITIC_HPP_
+} // namespace mppi::critics
+
+#endif // NAV2_MPPI_CONTROLLER_HM__CRITICS__PATH_ANGLE_CRITIC_HPP_

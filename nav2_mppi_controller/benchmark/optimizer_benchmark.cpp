@@ -39,15 +39,15 @@
 class RosLockGuard
 {
 public:
-  RosLockGuard() {rclcpp::init(0, nullptr);}
-  ~RosLockGuard() {rclcpp::shutdown();}
+  RosLockGuard() { rclcpp::init(0, nullptr); }
+  ~RosLockGuard() { rclcpp::shutdown(); }
 };
 
 RosLockGuard g_rclcpp;
 
 void prepareAndRunBenchmark(
-  bool consider_footprint, std::string motion_model,
-  std::vector<std::string> critics, benchmark::State & state)
+    bool consider_footprint, std::string motion_model,
+    std::vector<std::string> critics, benchmark::State &state)
 {
   int batch_size = 300;
   int time_steps = 12;
@@ -64,7 +64,7 @@ void prepareAndRunBenchmark(
 
   TestPathSettings path_settings{start_pose, path_points, path_step, path_step};
   TestOptimizerSettings optimizer_settings{batch_size, time_steps, iteration_count,
-    lookahead_distance, motion_model, consider_footprint};
+                                           lookahead_distance, motion_model, consider_footprint};
 
   unsigned int offset = 4;
   unsigned int obstacle_size = offset * 2;
@@ -86,55 +86,51 @@ void prepareAndRunBenchmark(
   auto pose = getDummyPointStamped(node, start_pose);
   auto velocity = getDummyTwist();
   auto path = getIncrementalDummyPath(node, path_settings);
-  nav2_core::GoalChecker * dummy_goal_checker{nullptr};
+  nav2_core::GoalChecker *dummy_goal_checker{nullptr};
 
-  for (auto _ : state) {
+  for (auto _ : state)
+  {
     optimizer->evalControl(pose, velocity, path, dummy_goal_checker);
   }
 }
 
-static void BM_DiffDrivePointFootprint(benchmark::State & state)
+static void BM_DiffDrivePointFootprint(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "DiffDrive";
-  std::vector<std::string> critics = {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"},
-    {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}};
+  std::vector<std::string> critics = {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"}, {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}};
 
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-static void BM_DiffDrive(benchmark::State & state)
+static void BM_DiffDrive(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "DiffDrive";
-  std::vector<std::string> critics = {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"},
-    {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}};
+  std::vector<std::string> critics = {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"}, {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}};
 
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-
-static void BM_Omni(benchmark::State & state)
+static void BM_Omni(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "Omni";
-  std::vector<std::string> critics = {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"},
-    {"TwirlingCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}};
+  std::vector<std::string> critics = {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"}, {"TwirlingCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}};
 
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-static void BM_Ackermann(benchmark::State & state)
+static void BM_Ackermann(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "Ackermann";
-  std::vector<std::string> critics = {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"},
-    {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}};
+  std::vector<std::string> critics = {{"GoalCritic"}, {"GoalAngleCritic"}, {"ObstaclesCritic"}, {"PathAngleCritic"}, {"PathFollowCritic"}, {"PreferForwardCritic"}};
 
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-static void BM_GoalCritic(benchmark::State & state)
+static void BM_GoalCritic(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "Ackermann";
@@ -143,7 +139,7 @@ static void BM_GoalCritic(benchmark::State & state)
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-static void BM_GoalAngleCritic(benchmark::State & state)
+static void BM_GoalAngleCritic(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "Ackermann";
@@ -152,7 +148,7 @@ static void BM_GoalAngleCritic(benchmark::State & state)
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-static void BM_ObstaclesCritic(benchmark::State & state)
+static void BM_ObstaclesCritic(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "Ackermann";
@@ -161,7 +157,7 @@ static void BM_ObstaclesCritic(benchmark::State & state)
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-static void BM_ObstaclesCriticPointFootprint(benchmark::State & state)
+static void BM_ObstaclesCriticPointFootprint(benchmark::State &state)
 {
   bool consider_footprint = false;
   std::string motion_model = "Ackermann";
@@ -170,7 +166,7 @@ static void BM_ObstaclesCriticPointFootprint(benchmark::State & state)
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-static void BM_TwilringCritic(benchmark::State & state)
+static void BM_TwilringCritic(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "Ackermann";
@@ -179,7 +175,7 @@ static void BM_TwilringCritic(benchmark::State & state)
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-static void BM_PathFollowCritic(benchmark::State & state)
+static void BM_PathFollowCritic(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "Ackermann";
@@ -188,7 +184,7 @@ static void BM_PathFollowCritic(benchmark::State & state)
   prepareAndRunBenchmark(consider_footprint, motion_model, critics, state);
 }
 
-static void BM_PathAngleCritic(benchmark::State & state)
+static void BM_PathAngleCritic(benchmark::State &state)
 {
   bool consider_footprint = true;
   std::string motion_model = "Ackermann";

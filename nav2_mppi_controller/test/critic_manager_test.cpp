@@ -24,19 +24,19 @@
 class RosLockGuard
 {
 public:
-  RosLockGuard() {rclcpp::init(0, nullptr);}
-  ~RosLockGuard() {rclcpp::shutdown();}
+  RosLockGuard() { rclcpp::init(0, nullptr); }
+  ~RosLockGuard() { rclcpp::shutdown(); }
 };
 RosLockGuard g_rclcpp;
 
-using namespace mppi;  // NOLINT
-using namespace mppi::critics;  // NOLINT
+using namespace mppi;          // NOLINT
+using namespace mppi::critics; // NOLINT
 
 class DummyCritic : public CriticFunction
 {
 public:
-  virtual void initialize() {initialized_ = true;}
-  virtual void score(CriticData & /*data*/) {scored_ = true;}
+  virtual void initialize() { initialized_ = true; }
+  virtual void score(CriticData & /*data*/) { scored_ = true; }
   bool initialized_{false}, scored_{false};
 };
 
@@ -44,7 +44,7 @@ class CriticManagerWrapper : public CriticManager
 {
 public:
   CriticManagerWrapper()
-  : CriticManager() {}
+      : CriticManager() {}
 
   virtual void loadCritics()
   {
@@ -52,11 +52,11 @@ public:
     auto instance = std::unique_ptr<critics::CriticFunction>(new DummyCritic);
     critics_.push_back(std::move(instance));
     critics_.back()->on_configure(
-      parent_, name_, name_ + "." + "DummyCritic", costmap_ros_,
-      parameters_handler_);
+        parent_, name_, name_ + "." + "DummyCritic", costmap_ros_,
+        parameters_handler_);
   }
 
-  std::string getFullNameWrapper(const std::string & name)
+  std::string getFullNameWrapper(const std::string &name)
   {
     return getFullName(name);
   }
@@ -76,7 +76,7 @@ class CriticManagerWrapperEnum : public CriticManager
 {
 public:
   CriticManagerWrapperEnum()
-  : CriticManager() {}
+      : CriticManager() {}
 
   unsigned int getCriticNum()
   {
@@ -88,7 +88,7 @@ TEST(CriticManagerTests, BasicCriticOperations)
 {
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State lstate;
   costmap_ros->on_configure(lstate);
@@ -106,8 +106,8 @@ TEST(CriticManagerTests, BasicCriticOperations)
   xt::xtensor<float, 1> costs;
   float model_dt = 0.1;
   CriticData data =
-  {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr,
-    std::nullopt, std::nullopt};
+      {state, generated_trajectories, path, costs, model_dt, false, nullptr, nullptr,
+       std::nullopt, std::nullopt};
 
   data.fail_flag = true;
   EXPECT_FALSE(critic_manager.getDummyCriticScored());
@@ -123,10 +123,10 @@ TEST(CriticManagerTests, CriticLoadingTest)
 {
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
   node->declare_parameter(
-    "critic_manager.critics",
-    rclcpp::ParameterValue(std::vector<std::string>{"ConstraintCritic", "PreferForwardCritic"}));
+      "critic_manager.critics",
+      rclcpp::ParameterValue(std::vector<std::string>{"ConstraintCritic", "PreferForwardCritic"}));
   auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-    "dummy_costmap", "", "dummy_costmap");
+      "dummy_costmap", "", "dummy_costmap");
   ParametersHandler param_handler(node);
   rclcpp_lifecycle::State state;
   costmap_ros->on_configure(state);

@@ -24,12 +24,12 @@
 class RosLockGuard
 {
 public:
-  RosLockGuard() {rclcpp::init(0, nullptr);}
-  ~RosLockGuard() {rclcpp::shutdown();}
+  RosLockGuard() { rclcpp::init(0, nullptr); }
+  ~RosLockGuard() { rclcpp::shutdown(); }
 };
 RosLockGuard g_rclcpp;
 
-using namespace mppi;  // NOLINT
+using namespace mppi; // NOLINT
 
 TEST(TrajectoryVisualizerTests, StateTransition)
 {
@@ -53,8 +53,9 @@ TEST(TrajectoryVisualizerTests, VisPathRepub)
   pub_path.poses.resize(5);
 
   auto my_sub = node->create_subscription<nav_msgs::msg::Path>(
-    "transformed_global_plan", 10,
-    [&](const nav_msgs::msg::Path msg) {recieved_path = msg;});
+      "transformed_global_plan", 10,
+      [&](const nav_msgs::msg::Path msg)
+      { recieved_path = msg; });
 
   TrajectoryVisualizer vis;
   vis.on_configure(node, "my_name", "map", parameters_handler.get());
@@ -73,8 +74,9 @@ TEST(TrajectoryVisualizerTests, VisOptimalTrajectory)
 
   visualization_msgs::msg::MarkerArray recieved_msg;
   auto my_sub = node->create_subscription<visualization_msgs::msg::MarkerArray>(
-    "/trajectories", 10,
-    [&](const visualization_msgs::msg::MarkerArray msg) {recieved_msg = msg;});
+      "/trajectories", 10,
+      [&](const visualization_msgs::msg::MarkerArray msg)
+      { recieved_msg = msg; });
 
   // optimal_trajectory empty, should fail to publish
   xt::xtensor<float, 2> optimal_trajectory;
@@ -119,7 +121,8 @@ TEST(TrajectoryVisualizerTests, VisOptimalTrajectory)
   EXPECT_EQ(recieved_msg.markers[19].scale.z, 0.09);
 
   // Check that the colors are rational
-  for (unsigned int i = 0; i != recieved_msg.markers.size() - 1; i++) {
+  for (unsigned int i = 0; i != recieved_msg.markers.size() - 1; i++)
+  {
     EXPECT_LT(recieved_msg.markers[i].color.g, recieved_msg.markers[i + 1].color.g);
     EXPECT_LT(recieved_msg.markers[i].color.b, recieved_msg.markers[i + 1].color.b);
     EXPECT_EQ(recieved_msg.markers[i].color.r, recieved_msg.markers[i + 1].color.r);
@@ -134,8 +137,9 @@ TEST(TrajectoryVisualizerTests, VisCandidateTrajectories)
 
   visualization_msgs::msg::MarkerArray recieved_msg;
   auto my_sub = node->create_subscription<visualization_msgs::msg::MarkerArray>(
-    "/trajectories", 10,
-    [&](const visualization_msgs::msg::MarkerArray msg) {recieved_msg = msg;});
+      "/trajectories", 10,
+      [&](const visualization_msgs::msg::MarkerArray msg)
+      { recieved_msg = msg; });
 
   models::Trajectories candidate_trajectories;
   candidate_trajectories.x = xt::ones<float>({200, 12});

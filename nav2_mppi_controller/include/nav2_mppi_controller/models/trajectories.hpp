@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_MPPI_CONTROLLER__MODELS__TRAJECTORIES_HPP_
-#define NAV2_MPPI_CONTROLLER__MODELS__TRAJECTORIES_HPP_
+#ifndef NAV2_MPPI_CONTROLLER_HM__MODELS__TRAJECTORIES_HPP_
+#define NAV2_MPPI_CONTROLLER_HM__MODELS__TRAJECTORIES_HPP_
 
 #include <xtensor/xtensor.hpp>
 #include <xtensor/xview.hpp>
@@ -21,27 +21,27 @@
 namespace mppi::models
 {
 
-/**
- * @class mppi::models::Trajectories
- * @brief Candidate Trajectories
- */
-struct Trajectories
-{
-  xt::xtensor<float, 2> x;
-  xt::xtensor<float, 2> y;
-  xt::xtensor<float, 2> yaws;
-
   /**
-    * @brief Reset state data
-    */
-  void reset(unsigned int batch_size, unsigned int time_steps)
+   * @class mppi::models::Trajectories
+   * @brief Candidate Trajectories
+   */
+  struct Trajectories
   {
-    x = xt::zeros<float>({batch_size, time_steps});
-    y = xt::zeros<float>({batch_size, time_steps});
-    yaws = xt::zeros<float>({batch_size, time_steps});
-  }
-};
+    xt::xtensor<float, 2> x;
+    xt::xtensor<float, 2> y;
+    xt::xtensor<float, 2> yaws;
 
-}  // namespace mppi::models
+    /**
+     * @brief Reset state data
+     */
+    void reset(unsigned int batch_size, unsigned int time_steps)
+    {
+      x = xt::zeros<float>({batch_size, time_steps});
+      y = xt::zeros<float>({batch_size, time_steps});
+      yaws = xt::zeros<float>({batch_size, time_steps});
+    }
+  };
 
-#endif  // NAV2_MPPI_CONTROLLER__MODELS__TRAJECTORIES_HPP_
+} // namespace mppi::models
+
+#endif // NAV2_MPPI_CONTROLLER_HM__MODELS__TRAJECTORIES_HPP_

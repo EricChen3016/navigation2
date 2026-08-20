@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_MPPI_CONTROLLER__CRITICS__VELOCITY_DEADBAND_CRITIC_HPP_
-#define NAV2_MPPI_CONTROLLER__CRITICS__VELOCITY_DEADBAND_CRITIC_HPP_
+#ifndef NAV2_MPPI_CONTROLLER_HM__CRITICS__VELOCITY_DEADBAND_CRITIC_HPP_
+#define NAV2_MPPI_CONTROLLER_HM__CRITICS__VELOCITY_DEADBAND_CRITIC_HPP_
 
 #include <vector>
 
@@ -24,31 +24,31 @@
 namespace mppi::critics
 {
 
-/**
- * @class mppi::critics::VelocityDeadbandCritic
- * @brief Critic objective function for enforcing feasible constraints
- */
-class VelocityDeadbandCritic : public CriticFunction
-{
-public:
   /**
-   * @brief Initialize critic
+   * @class mppi::critics::VelocityDeadbandCritic
+   * @brief Critic objective function for enforcing feasible constraints
    */
-  void initialize() override;
+  class VelocityDeadbandCritic : public CriticFunction
+  {
+  public:
+    /**
+     * @brief Initialize critic
+     */
+    void initialize() override;
 
-  /**
-   * @brief Evaluate cost related to goal following
-   *
-   * @param costs [out] add reference cost values to this tensor
-   */
-  void score(CriticData & data) override;
+    /**
+     * @brief Evaluate cost related to goal following
+     *
+     * @param costs [out] add reference cost values to this tensor
+     */
+    void score(CriticData &data) override;
 
-protected:
-  unsigned int power_{0};
-  float weight_{0};
-  std::vector<float> deadband_velocities_{0.0f, 0.0f, 0.0f};
-};
+  protected:
+    unsigned int power_{0};
+    float weight_{0};
+    std::vector<float> deadband_velocities_{0.0f, 0.0f, 0.0f};
+  };
 
-}  // namespace mppi::critics
+} // namespace mppi::critics
 
-#endif  // NAV2_MPPI_CONTROLLER__CRITICS__VELOCITY_DEADBAND_CRITIC_HPP_
+#endif // NAV2_MPPI_CONTROLLER_HM__CRITICS__VELOCITY_DEADBAND_CRITIC_HPP_

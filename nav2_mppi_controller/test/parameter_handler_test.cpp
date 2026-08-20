@@ -24,13 +24,13 @@
 class RosLockGuard
 {
 public:
-  RosLockGuard() {rclcpp::init(0, nullptr);}
-  ~RosLockGuard() {rclcpp::shutdown();}
+  RosLockGuard() { rclcpp::init(0, nullptr); }
+  ~RosLockGuard() { rclcpp::shutdown(); }
 };
 
 RosLockGuard g_rclcpp;
 
-using namespace mppi;  // NOLINT
+using namespace mppi; // NOLINT
 
 class ParametersHandlerWrapper : public ParametersHandler
 {
@@ -38,17 +38,17 @@ public:
   ParametersHandlerWrapper() = default;
 
   explicit ParametersHandlerWrapper(
-    const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent)
-  : ParametersHandler(parent) {}
+      const rclcpp_lifecycle::LifecycleNode::WeakPtr &parent)
+      : ParametersHandler(parent) {}
 
-  template<typename T>
+  template <typename T>
   auto asWrapped(rclcpp::Parameter parameter)
   {
     return ParametersHandler::as<T>(parameter);
   }
 };
 
-using namespace mppi;  // NOLINT
+using namespace mppi; // NOLINT
 
 TEST(ParameterHandlerTest, asTypeConversionTest)
 {
@@ -60,10 +60,10 @@ TEST(ParameterHandlerTest, asTypeConversionTest)
 
   rclcpp::Parameter intv_p("intv_parameter", rclcpp::ParameterValue(std::vector<int>{1}));
   rclcpp::Parameter doublev_p(
-    "doublev_parameter", rclcpp::ParameterValue(std::vector<double>{10.0}));
+      "doublev_parameter", rclcpp::ParameterValue(std::vector<double>{10.0}));
   rclcpp::Parameter boolv_p("boolv_parameter", rclcpp::ParameterValue(std::vector<bool>{false}));
   rclcpp::Parameter stringv_p(
-    "stringv_parameter", rclcpp::ParameterValue(std::vector<std::string>{std::string("hello")}));
+      "stringv_parameter", rclcpp::ParameterValue(std::vector<std::string>{std::string("hello")}));
 
   EXPECT_EQ(a.asWrapped<int>(int_p), 1);
   EXPECT_EQ(a.asWrapped<double>(double_p), 10.0);
@@ -79,23 +79,28 @@ TEST(ParameterHandlerTest, asTypeConversionTest)
 TEST(ParameterHandlerTest, PrePostDynamicCallbackTest)
 {
   bool pre_triggered = false, post_triggered = false, dynamic_triggered = false;
-  auto preCb = [&]() {
-      if (post_triggered) {
-        throw std::runtime_error("Post-callback triggered before pre-callback!");
-      }
-      pre_triggered = true;
-    };
+  auto preCb = [&]()
+  {
+    if (post_triggered)
+    {
+      throw std::runtime_error("Post-callback triggered before pre-callback!");
+    }
+    pre_triggered = true;
+  };
 
-  auto postCb = [&]() {
-      if (!pre_triggered) {
-        throw std::runtime_error("Pre-callback was not triggered before post-callback!");
-      }
-      post_triggered = true;
-    };
+  auto postCb = [&]()
+  {
+    if (!pre_triggered)
+    {
+      throw std::runtime_error("Pre-callback was not triggered before post-callback!");
+    }
+    post_triggered = true;
+  };
 
-  auto dynamicCb = [&](const rclcpp::Parameter & /*param*/) {
-      dynamic_triggered = true;
-    };
+  auto dynamicCb = [&](const rclcpp::Parameter & /*param*/)
+  {
+    dynamic_triggered = true;
+  };
 
   rclcpp::Parameter random_param("blah_blah", rclcpp::ParameterValue(true));
   rclcpp::Parameter random_param2("use_sim_time", rclcpp::ParameterValue(true));
@@ -163,17 +168,17 @@ TEST(ParameterHandlerTest, DynamicAndStaticParametersTest)
 
   // Now change them both via dynamic parameters
   auto rec_param = std::make_shared<rclcpp::AsyncParametersClient>(
-    node->get_node_base_interface(), node->get_node_topics_interface(),
-    node->get_node_graph_interface(),
-    node->get_node_services_interface());
+      node->get_node_base_interface(), node->get_node_topics_interface(),
+      node->get_node_graph_interface(),
+      node->get_node_services_interface());
 
   auto results = rec_param->set_parameters_atomically(
-    {rclcpp::Parameter("dynamic_int", 10),
-      rclcpp::Parameter("static_int", 10)});
+      {rclcpp::Parameter("dynamic_int", 10),
+       rclcpp::Parameter("static_int", 10)});
 
   rclcpp::spin_until_future_complete(
-    node->get_node_base_interface(),
-    results);
+      node->get_node_base_interface(),
+      results);
 
   // Now, only param1 should change, param 2 should be the same
   EXPECT_EQ(p1, 10);

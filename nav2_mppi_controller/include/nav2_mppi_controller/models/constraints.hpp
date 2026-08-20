@@ -12,35 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_MPPI_CONTROLLER__MODELS__CONSTRAINTS_HPP_
-#define NAV2_MPPI_CONTROLLER__MODELS__CONSTRAINTS_HPP_
+#ifndef NAV2_MPPI_CONTROLLER_HM__MODELS__CONSTRAINTS_HPP_
+#define NAV2_MPPI_CONTROLLER_HM__MODELS__CONSTRAINTS_HPP_
 
 namespace mppi::models
 {
 
-/**
- * @struct mppi::models::ControlConstraints
- * @brief Constraints on control
- */
-struct ControlConstraints
-{
-  float vx_max;
-  float vx_min;
-  float vy;
-  float wz;
-};
+  /**
+   * @struct mppi::models::ControlConstraints
+   * @brief Constraints on control
+   */
+  struct ControlConstraints
+  {
+    float vx_max;
+    float vx_min;
+    float vy;
+    float wz;
+  };
 
-/**
- * @struct mppi::models::SamplingStd
- * @brief Noise parameters for sampling trajectories
- */
-struct SamplingStd
-{
-  float vx;
-  float vy;
-  float wz;
-};
+  /**
+   * @struct mppi::models::SamplingStd
+   * @brief Noise parameters for sampling trajectories
+   */
+  struct SamplingStd
+  {
+    float vx;
+    float vy;
+    float wz;
+  };
 
-}  // namespace mppi::models
+} // namespace mppi::models
 
-#endif  // NAV2_MPPI_CONTROLLER__MODELS__CONSTRAINTS_HPP_
+#endif // NAV2_MPPI_CONTROLLER_HM__MODELS__CONSTRAINTS_HPP_

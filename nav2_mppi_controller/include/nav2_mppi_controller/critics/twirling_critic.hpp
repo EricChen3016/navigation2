@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_MPPI_CONTROLLER__CRITICS__TWIRLING_CRITIC_HPP_
-#define NAV2_MPPI_CONTROLLER__CRITICS__TWIRLING_CRITIC_HPP_
+#ifndef NAV2_MPPI_CONTROLLER_HM__CRITICS__TWIRLING_CRITIC_HPP_
+#define NAV2_MPPI_CONTROLLER_HM__CRITICS__TWIRLING_CRITIC_HPP_
 
 #include "nav2_mppi_controller/critic_function.hpp"
 #include "nav2_mppi_controller/tools/utils.hpp"
@@ -21,31 +21,31 @@
 namespace mppi::critics
 {
 
-/**
- * @class mppi::critics::ConstraintCritic
- * @brief Critic objective function for penalizing wiggling/twirling
- */
-class TwirlingCritic : public CriticFunction
-{
-public:
   /**
-    * @brief Initialize critic
-    */
-  void initialize() override;
-
-  /**
-   * @brief Evaluate cost related to robot orientation at goal pose
-   * (considered only if robot near last goal in current plan)
-   *
-   * @param costs [out] add goal angle cost values to this tensor
+   * @class mppi::critics::ConstraintCritic
+   * @brief Critic objective function for penalizing wiggling/twirling
    */
-  void score(CriticData & data) override;
+  class TwirlingCritic : public CriticFunction
+  {
+  public:
+    /**
+     * @brief Initialize critic
+     */
+    void initialize() override;
 
-protected:
-  unsigned int power_{0};
-  float weight_{0};
-};
+    /**
+     * @brief Evaluate cost related to robot orientation at goal pose
+     * (considered only if robot near last goal in current plan)
+     *
+     * @param costs [out] add goal angle cost values to this tensor
+     */
+    void score(CriticData &data) override;
 
-}  // namespace mppi::critics
+  protected:
+    unsigned int power_{0};
+    float weight_{0};
+  };
 
-#endif  // NAV2_MPPI_CONTROLLER__CRITICS__TWIRLING_CRITIC_HPP_
+} // namespace mppi::critics
+
+#endif // NAV2_MPPI_CONTROLLER_HM__CRITICS__TWIRLING_CRITIC_HPP_

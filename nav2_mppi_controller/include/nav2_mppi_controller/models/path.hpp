@@ -12,35 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_MPPI_CONTROLLER__MODELS__PATH_HPP_
-#define NAV2_MPPI_CONTROLLER__MODELS__PATH_HPP_
+#ifndef NAV2_MPPI_CONTROLLER_HM__MODELS__PATH_HPP_
+#define NAV2_MPPI_CONTROLLER_HM__MODELS__PATH_HPP_
 
 #include <xtensor/xtensor.hpp>
 
 namespace mppi::models
 {
 
-/**
- * @struct mppi::models::Path
- * @brief Path represented as a tensor
- */
-struct Path
-{
-  xt::xtensor<float, 1> x;
-  xt::xtensor<float, 1> y;
-  xt::xtensor<float, 1> yaws;
-
   /**
-    * @brief Reset path data
-    */
-  void reset(unsigned int size)
+   * @struct mppi::models::Path
+   * @brief Path represented as a tensor
+   */
+  struct Path
   {
-    x = xt::zeros<float>({size});
-    y = xt::zeros<float>({size});
-    yaws = xt::zeros<float>({size});
-  }
-};
+    xt::xtensor<float, 1> x;
+    xt::xtensor<float, 1> y;
+    xt::xtensor<float, 1> yaws;
 
-}  // namespace mppi::models
+    /**
+     * @brief Reset path data
+     */
+    void reset(unsigned int size)
+    {
+      x = xt::zeros<float>({size});
+      y = xt::zeros<float>({size});
+      yaws = xt::zeros<float>({size});
+    }
+  };
 
-#endif  // NAV2_MPPI_CONTROLLER__MODELS__PATH_HPP_
+} // namespace mppi::models
+
+#endif // NAV2_MPPI_CONTROLLER_HM__MODELS__PATH_HPP_

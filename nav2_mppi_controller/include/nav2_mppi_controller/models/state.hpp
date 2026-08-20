@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_MPPI_CONTROLLER__MODELS__STATE_HPP_
-#define NAV2_MPPI_CONTROLLER__MODELS__STATE_HPP_
+#ifndef NAV2_MPPI_CONTROLLER_HM__MODELS__STATE_HPP_
+#define NAV2_MPPI_CONTROLLER_HM__MODELS__STATE_HPP_
 
 #include <xtensor/xtensor.hpp>
 
@@ -23,37 +23,37 @@
 namespace mppi::models
 {
 
-/**
- * @struct mppi::models::State
- * @brief State information: velocities, controls, poses, speed
- */
-struct State
-{
-  xt::xtensor<float, 2> vx;
-  xt::xtensor<float, 2> vy;
-  xt::xtensor<float, 2> wz;
-
-  xt::xtensor<float, 2> cvx;
-  xt::xtensor<float, 2> cvy;
-  xt::xtensor<float, 2> cwz;
-
-  geometry_msgs::msg::PoseStamped pose;
-  geometry_msgs::msg::Twist speed;
-
   /**
-    * @brief Reset state data
-    */
-  void reset(unsigned int batch_size, unsigned int time_steps)
+   * @struct mppi::models::State
+   * @brief State information: velocities, controls, poses, speed
+   */
+  struct State
   {
-    vx = xt::zeros<float>({batch_size, time_steps});
-    vy = xt::zeros<float>({batch_size, time_steps});
-    wz = xt::zeros<float>({batch_size, time_steps});
+    xt::xtensor<float, 2> vx;
+    xt::xtensor<float, 2> vy;
+    xt::xtensor<float, 2> wz;
 
-    cvx = xt::zeros<float>({batch_size, time_steps});
-    cvy = xt::zeros<float>({batch_size, time_steps});
-    cwz = xt::zeros<float>({batch_size, time_steps});
-  }
-};
-}  // namespace mppi::models
+    xt::xtensor<float, 2> cvx;
+    xt::xtensor<float, 2> cvy;
+    xt::xtensor<float, 2> cwz;
 
-#endif  // NAV2_MPPI_CONTROLLER__MODELS__STATE_HPP_
+    geometry_msgs::msg::PoseStamped pose;
+    geometry_msgs::msg::Twist speed;
+
+    /**
+     * @brief Reset state data
+     */
+    void reset(unsigned int batch_size, unsigned int time_steps)
+    {
+      vx = xt::zeros<float>({batch_size, time_steps});
+      vy = xt::zeros<float>({batch_size, time_steps});
+      wz = xt::zeros<float>({batch_size, time_steps});
+
+      cvx = xt::zeros<float>({batch_size, time_steps});
+      cvy = xt::zeros<float>({batch_size, time_steps});
+      cwz = xt::zeros<float>({batch_size, time_steps});
+    }
+  };
+} // namespace mppi::models
+
+#endif // NAV2_MPPI_CONTROLLER_HM__MODELS__STATE_HPP_

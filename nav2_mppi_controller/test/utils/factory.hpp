@@ -37,16 +37,15 @@
 namespace detail
 {
 
-template<typename TMessage, typename TNode>
-void setHeader(TMessage && msg, TNode node, std::string frame)
-{
-  auto time = node->get_clock()->now();
-  msg.header.frame_id = frame;
-  msg.header.stamp = time;
-}
+  template <typename TMessage, typename TNode>
+  void setHeader(TMessage &&msg, TNode node, std::string frame)
+  {
+    auto time = node->get_clock()->now();
+    msg.header.frame_id = frame;
+    msg.header.stamp = time;
+  }
 
-}  // namespace detail
-
+} // namespace detail
 
 /**
  * Adds some parameters for the optimizer to a special container.
@@ -54,9 +53,9 @@ void setHeader(TMessage && msg, TNode node, std::string frame)
  * @param params_ container for optimizer's parameters.
  */
 void setUpOptimizerParams(
-  const TestOptimizerSettings & s,
-  const std::vector<std::string> & critics,
-  std::vector<rclcpp::Parameter> & params_, std::string node_name = std::string("dummy"))
+    const TestOptimizerSettings &s,
+    const std::vector<std::string> &critics,
+    std::vector<rclcpp::Parameter> &params_, std::string node_name = std::string("dummy"))
 {
   constexpr double dummy_freq = 50.0;
   params_.emplace_back(rclcpp::Parameter(node_name + ".iteration_count", s.iteration_count));
@@ -69,8 +68,8 @@ void setUpOptimizerParams(
 }
 
 void setUpControllerParams(
-  bool visualize, std::vector<rclcpp::Parameter> & params_,
-  std::string node_name = std::string("dummy"))
+    bool visualize, std::vector<rclcpp::Parameter> &params_,
+    std::string node_name = std::string("dummy"))
 {
   double dummy_freq = 50.0;
   params_.emplace_back(rclcpp::Parameter(node_name + ".visualize", visualize));
@@ -78,8 +77,8 @@ void setUpControllerParams(
 }
 
 rclcpp::NodeOptions getOptimizerOptions(
-  TestOptimizerSettings s,
-  const std::vector<std::string> & critics)
+    TestOptimizerSettings s,
+    const std::vector<std::string> &critics)
 {
   std::vector<rclcpp::Parameter> params;
   rclcpp::NodeOptions options;
@@ -108,7 +107,7 @@ std::shared_ptr<nav2_costmap_2d::Costmap2DROS> getDummyCostmapRos()
 std::shared_ptr<nav2_costmap_2d::Costmap2D> getDummyCostmap(TestCostmapSettings s)
 {
   auto costmap = std::make_shared<nav2_costmap_2d::Costmap2D>(
-    s.cells_x, s.cells_y, s.resolution, s.origin_x, s.origin_y, s.cost_map_default_value);
+      s.cells_x, s.cells_y, s.resolution, s.origin_x, s.origin_y, s.cost_map_default_value);
 
   return costmap;
 }
@@ -132,11 +131,11 @@ std::shared_ptr<nav2_costmap_2d::Costmap2DROS> getDummyCostmapRos(TestCostmapSet
 
 std::shared_ptr<rclcpp_lifecycle::LifecycleNode>
 getDummyNode(
-  TestOptimizerSettings s, std::vector<std::string> critics,
-  std::string node_name = std::string("dummy"))
+    TestOptimizerSettings s, std::vector<std::string> critics,
+    std::string node_name = std::string("dummy"))
 {
   auto node =
-    std::make_shared<rclcpp_lifecycle::LifecycleNode>(node_name, getOptimizerOptions(s, critics));
+      std::make_shared<rclcpp_lifecycle::LifecycleNode>(node_name, getOptimizerOptions(s, critics));
   return node;
 }
 
@@ -147,10 +146,10 @@ getDummyNode(rclcpp::NodeOptions options, std::string node_name = std::string("d
   return node;
 }
 
-template<typename TNode, typename TCostMap, typename TParamHandler>
+template <typename TNode, typename TCostMap, typename TParamHandler>
 std::shared_ptr<mppi::Optimizer> getDummyOptimizer(
-  TNode node, TCostMap costmap_ros,
-  TParamHandler * params_handler)
+    TNode node, TCostMap costmap_ros,
+    TParamHandler *params_handler)
 {
   std::shared_ptr<mppi::Optimizer> optimizer = std::make_shared<mppi::Optimizer>();
   std::weak_ptr<rclcpp_lifecycle::LifecycleNode> weak_ptr_node{node};
@@ -160,10 +159,10 @@ std::shared_ptr<mppi::Optimizer> getDummyOptimizer(
   return optimizer;
 }
 
-template<typename TNode, typename TCostMap, typename TFBuffer, typename TParamHandler>
+template <typename TNode, typename TCostMap, typename TFBuffer, typename TParamHandler>
 mppi::PathHandler getDummyPathHandler(
-  TNode node, TCostMap costmap_ros, TFBuffer tf_buffer,
-  TParamHandler * params_handler)
+    TNode node, TCostMap costmap_ros, TFBuffer tf_buffer,
+    TParamHandler *params_handler)
 {
   mppi::PathHandler path_handler;
   std::weak_ptr<rclcpp_lifecycle::LifecycleNode> weak_ptr_node{node};
@@ -173,10 +172,10 @@ mppi::PathHandler getDummyPathHandler(
   return path_handler;
 }
 
-template<typename TNode, typename TCostMap, typename TFBuffer>
+template <typename TNode, typename TCostMap, typename TFBuffer>
 std::shared_ptr<nav2_mppi_controller::MPPIController> getDummyController(
-  TNode node, TFBuffer tf_buffer,
-  TCostMap costmap_ros)
+    TNode node, TFBuffer tf_buffer,
+    TCostMap costmap_ros)
 {
   auto controller = std::make_shared<nav2_mppi_controller::MPPIController>();
   std::weak_ptr<rclcpp_lifecycle::LifecycleNode> weak_ptr_node{node};
@@ -192,9 +191,9 @@ auto getDummyTwist()
   return twist;
 }
 
-template<typename TNode>
+template <typename TNode>
 geometry_msgs::msg::PoseStamped
-getDummyPointStamped(TNode & node, std::string frame = std::string("odom"))
+getDummyPointStamped(TNode &node, std::string frame = std::string("odom"))
 {
   geometry_msgs::msg::PoseStamped point;
   detail::setHeader(point, node, frame);
@@ -202,8 +201,8 @@ getDummyPointStamped(TNode & node, std::string frame = std::string("odom"))
   return point;
 }
 
-template<typename TNode>
-geometry_msgs::msg::PoseStamped getDummyPointStamped(TNode & node, TestPose pose)
+template <typename TNode>
+geometry_msgs::msg::PoseStamped getDummyPointStamped(TNode &node, TestPose pose)
 {
   geometry_msgs::msg::PoseStamped point = getDummyPointStamped(node);
   point.pose.position.x = pose.x;
@@ -212,7 +211,7 @@ geometry_msgs::msg::PoseStamped getDummyPointStamped(TNode & node, TestPose pose
   return point;
 }
 
-template<typename TNode>
+template <typename TNode>
 nav_msgs::msg::Path getDummyPath(TNode node, std::string frame = std::string("odom"))
 {
   nav_msgs::msg::Path path;
@@ -220,24 +219,26 @@ nav_msgs::msg::Path getDummyPath(TNode node, std::string frame = std::string("od
   return path;
 }
 
-template<typename TNode>
+template <typename TNode>
 auto getDummyPath(size_t points_count, TNode node)
 {
   auto path = getDummyPath(node);
 
-  for (size_t i = 0; i < points_count; i++) {
+  for (size_t i = 0; i < points_count; i++)
+  {
     path.poses.push_back(getDummyPointStamped(node));
   }
 
   return path;
 }
 
-template<typename TNode>
+template <typename TNode>
 nav_msgs::msg::Path getIncrementalDummyPath(TNode node, TestPathSettings s)
 {
   auto path = getDummyPath(node);
 
-  for (size_t i = 0; i < s.poses_count; i++) {
+  for (size_t i = 0; i < s.poses_count; i++)
+  {
     double x = s.start_pose.x + static_cast<double>(i) * s.step_x;
     double y = s.start_pose.y + static_cast<double>(i) * s.step_y;
     path.poses.push_back(getDummyPointStamped(node, TestPose{x, y}));

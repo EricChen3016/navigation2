@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_MPPI_CONTROLLER__CRITICS__PATH_FOLLOW_CRITIC_HPP_
-#define NAV2_MPPI_CONTROLLER__CRITICS__PATH_FOLLOW_CRITIC_HPP_
+#ifndef NAV2_MPPI_CONTROLLER_HM__CRITICS__PATH_FOLLOW_CRITIC_HPP_
+#define NAV2_MPPI_CONTROLLER_HM__CRITICS__PATH_FOLLOW_CRITIC_HPP_
 
 #include "nav2_mppi_controller/critic_function.hpp"
 #include "nav2_mppi_controller/models/state.hpp"
@@ -23,38 +23,38 @@
 namespace mppi::critics
 {
 
-/**
- * @class mppi::critics::ConstraintCritic
- * @brief Critic objective function for following the path approximately
- * To allow for deviation from path in case of dynamic obstacles. Path Align
- * is what aligns the trajectories to the path more or less precisely, if desireable.
- * A higher weight here with an offset > 1 will accelerate the samples to full speed
- * faster and push the follow point further ahead, creating some shortcutting.
- */
-class PathFollowCritic : public CriticFunction
-{
-public:
   /**
-    * @brief Initialize critic
-    */
-  void initialize() override;
-
-  /**
-   * @brief Evaluate cost related to robot orientation at goal pose
-   * (considered only if robot near last goal in current plan)
-   *
-   * @param costs [out] add goal angle cost values to this tensor
+   * @class mppi::critics::ConstraintCritic
+   * @brief Critic objective function for following the path approximately
+   * To allow for deviation from path in case of dynamic obstacles. Path Align
+   * is what aligns the trajectories to the path more or less precisely, if desireable.
+   * A higher weight here with an offset > 1 will accelerate the samples to full speed
+   * faster and push the follow point further ahead, creating some shortcutting.
    */
-  void score(CriticData & data) override;
+  class PathFollowCritic : public CriticFunction
+  {
+  public:
+    /**
+     * @brief Initialize critic
+     */
+    void initialize() override;
 
-protected:
-  float threshold_to_consider_{0};
-  size_t offset_from_furthest_{0};
+    /**
+     * @brief Evaluate cost related to robot orientation at goal pose
+     * (considered only if robot near last goal in current plan)
+     *
+     * @param costs [out] add goal angle cost values to this tensor
+     */
+    void score(CriticData &data) override;
 
-  unsigned int power_{0};
-  float weight_{0};
-};
+  protected:
+    float threshold_to_consider_{0};
+    size_t offset_from_furthest_{0};
 
-}  // namespace mppi::critics
+    unsigned int power_{0};
+    float weight_{0};
+  };
 
-#endif  // NAV2_MPPI_CONTROLLER__CRITICS__PATH_FOLLOW_CRITIC_HPP_
+} // namespace mppi::critics
+
+#endif // NAV2_MPPI_CONTROLLER_HM__CRITICS__PATH_FOLLOW_CRITIC_HPP_
