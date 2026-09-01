@@ -98,7 +98,13 @@ set(libraries mppi_controller mppi_critics)
 foreach(lib IN LISTS libraries)
   target_compile_options(${lib} PUBLIC -fconcepts)
   target_include_directories(${lib} PUBLIC ${xsimd_INCLUDE_DIRS})  #  ${OpenMP_INCLUDE_DIRS}
-  target_link_libraries(${lib} xtensor xtensor::optimize xtensor::use_xsimd)
+  target_link_options(${lib} PRIVATE
+    "-Wl,--no-as-needed,$<TARGET_FILE:nav2_msgs::nav2_msgs__rosidl_typesupport_cpp>,--as-needed")
+  target_link_libraries(${lib}
+    nav2_msgs::nav2_msgs__rosidl_typesupport_cpp
+    xtensor
+    xtensor::optimize
+    xtensor::use_xsimd)
   ament_target_dependencies(${lib} ${dependencies_pkgs})
 endforeach()
 
